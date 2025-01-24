@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning</title>
+    <style>
+        body {
+            padding: 30px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        button {
+            color: #fff;
+            background-color: #3b82f6;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            margin: 10px 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #2563eb;
+            transform: scale(1.1);
+        }
+        .container {
+            margin: 0 auto;
+            width: 70%;
+            font-size: 1.5rem;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .mini-games, .leaderboard, .settings {
+            margin-top: 30px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            border: none;
+            margin-top: 10px;
+        }
+        .word-pair {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .word {
+            width: 45%;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .meaning{
+            width: 45%;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #timer {
+            font-size: 2rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Home Page Content (index.html) -->
+    <div id="home-page">
+        <h1>Language Learning</h1>
+
+        <div class="container">
+            <div class="section-title">Select Language to Learn:</div>
+            <select id="languageSelect">
+                <option value="">--Choose a language--</option>
+                <option value="spanish">Spanish</option>
+                <option value="french">French</option>
+                <option value="german">German</option>
+                <option value="japanese">Japanese</option>
+            </select>
+        </div>
+
+        <div class="container mini-games">
+            <div class="section-title">Choose a Mini Game:</div>
+            <button id="showSpeedGame">Speed</button>
+            <button id="showPronunciationGame">Pronunciation</button>
+            <button id="scenariosGame">Scenarios</button>
+        </div>
+    </div>
+
+    <!-- Speed Game Content (speed_game.html) -->
+    <div id="speed-game-page" style="display: none">
+        <h1>Match the Words to their meanings!</h1>
+        <div id="matching-game">
+            <div class="word-pair" id="word1">
+              <div class="word">
+                Word 1
+                </div>
+               <div class="meaning">
+                    Meaning 1
+                </div>
+            </div>
+            <div class="word-pair" id="word2">
+              <div class="word">
+                 Word 2
+                </div>
+               <div class="meaning">
+                  Meaning 2
+                </div>
+            </div>
+        </div>
+
+        <div id="timer">Time Remaining: 2:00</div>
+        <button onclick="goHome()">Go back home</button>
+    </div>
+
+    <!-- Pronunciation Game Content (pronunciation_game.html) -->
+    <div id="pronunciation-game-page" style="display: none">
+        <h1>Pronounce these words</h1>
+        <div id="pronunciation-words">
+           <p>Word A</p>
+           <p>Word B</p>
+           <p>Word C</p>
+        </div>
+        <button onclick="goHome()">Go back home</button>
+    </div>
+
+    <script>
+        document.getElementById("showSpeedGame").addEventListener("click", () => {
+            document.getElementById('home-page').style.display = "none";
+            document.getElementById('speed-game-page').style.display = "block";
+        });
+
+        document.getElementById("showPronunciationGame").addEventListener("click", () => {
+            document.getElementById('home-page').style.display = "none";
+            document.getElementById('pronunciation-game-page').style.display = "block";
+        });
+
+        document.getElementById("scenariosGame").addEventListener("click", () => {
+            const userPlace = prompt("Enter a place you're going to:");
+            fetch("/minigame/scenarios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ place: userPlace })
+            })
+            .then(response => response.json())
+            .then(data => alert("Words for " + userPlace + ": " + data.words.join(", ")))
+            .catch(err => console.error(err));
+        });
+
+        function goHome() {
+            document.getElementById('home-page').style.display = "block";
+            document.getElementById('speed-game-page').style.display = "none";
+            document.getElementById('pronunciation-game-page').style.display = "none";
+        }
+
+        // Timer functionality
+        let timer;
+        let timeLeft = 120; // 2 minutes in seconds
+
+        function startTimer() {
+            timer = setInterval(function() {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById("timer").innerText = `Time Remaining: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("Time's up!");
+                    goHome(); // Go back to home page after time is up
+                }
+            }, 1000);
+        }
+
+        // Start the timer when the speed game page is shown
+        if (document.getElementById('speed-game-page').style.display !== "none") {
+            startTimer();
+        }
+    </script>
+</body>
+</html>

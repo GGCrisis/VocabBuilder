@@ -96,8 +96,8 @@
             <select id="languageSelect">
                 <option value="">--Choose a language--</option>
                 <option value="spanish">Spanish</option>
-                <option value="french">French</option>
-                <option value="german">German</option>
+                <option value="french">Telegu</option>
+                <option value="german">Sanskrit</option>
                 <option value="japanese">Japanese</option>
             </select>
         </div>
@@ -147,8 +147,8 @@
             <p id="word">Loading word...</p>
             <p id="meaning">Loading meaning...</p>
         </div>
-        <div id="timer">Time Remaining: 2:00</div>
         <button onclick="goHome()">Go back home</button>
+        <button id="nextWordButton">Next Word</button> <!-- Add this button -->
     </div>
 
     <script>
@@ -180,43 +180,17 @@
         });
 
         // Scenarios Game
-document.getElementById("scenariosGame").addEventListener("click", () => {
-    const userPlace = prompt("Enter a place you're going to:");
-    if (userPlace) {
-        fetch('/scenario', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ place: userPlace }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.words) {
-                    // Display the scenario name
-                    document.getElementById("scenario-name").innerText = userPlace;
-
-                    // Clear previous results
-                    const wordList = document.getElementById("word-list");
-                    wordList.innerHTML = "";
-
-                    // Add each word and meaning to the list
-                    data.words.forEach(item => {
-                        const li = document.createElement("li");
-                        li.innerHTML = `<strong>${item.word}</strong>: ${item.meaning}`;
-                        wordList.appendChild(li);
-                    });
-
-                    // Show the results section
-                    document.getElementById("scenario-results").style.display = "block";
-                } else {
-                    alert(data.error || "Failed to fetch words for the scenario.");
-                }
+        document.getElementById("scenariosGame").addEventListener("click", () => {
+            const userPlace = prompt("Enter a place you're going to:");
+            fetch("/minigame/scenarios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ place: userPlace }),
             })
-            .catch(err => {
-                console.error(err);
-                alert("An error occurred while fetching scenario words.");
-            });
-    }
-});
+                .then(response => response.json())
+                .then(data => alert(`Words for ${userPlace}: ${data.words.join(", ")}`))
+                .catch(err => console.error(err));
+        });
 
         // Timer functionality
         function startTimer(duration) {
@@ -248,27 +222,37 @@ document.getElementById("scenariosGame").addEventListener("click", () => {
         }
 
         // Fetch flashcard data from Flask API
-        // Fetch flashcard data from Flask API
-function loadNextWord() {
-    console.log("Fetching next word..."); // Debug log
-    fetch('http://127.0.0.1:5000/next_word')
-        .then(response => {
-            console.log("Response received:", response); // Debug log
-            return response.json();
-        })
-        .then(data => {
-            console.log("Data received:", data); // Debug log
-            if (data.word) {
-                document.getElementById("word").innerText = `Word: ${data.word}`;
-                document.getElementById("meaning").innerText = `Meaning: ${data.meaning}`;
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error loading word:', error);
+        function loadNextWord() {
+            console.log("Fetching next word..."); // Debug log
+            fetch('http://127.0.0.1:5000/next_word')
+                .then(response => {
+                    console.log("Response received:", response); // Debug log
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Data received:", data); // Debug log
+                    if (data.word) {
+                        console.log("Updating word and meaning in HTML..."); // Debug log
+                        document.getElementById("word").innerText = `Word: ${data.word}`;
+                        document.getElementById("meaning").innerText = `Meaning: ${data.meaning}`;
+                    } else {
+                        console.log("No word found in data:", data); // Debug log
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading word:', error);
+                });
+        }
+
+        // Add event listener for the "Next Word" button
+        document.getElementById("nextWordButton").addEventListener("click", () => {
+            console.log("Next Word button clicked"); // Debug log
+            loadNextWord(); // Load the next word
         });
-}
     </script>
 </body>
 </html>

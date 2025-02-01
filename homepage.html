@@ -3,93 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language Learning</title>
-    <style>
-        body {
-            padding: 30px;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            font-family: 'Arial', sans-serif;
-            color: #fff;
-        }
-        h1 {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-        button {
-            color: #fff;
-            background-color: #3b82f6;
-            padding: 15px 20px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            margin: 10px 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background-color: #2563eb;
-            transform: scale(1.1);
-        }
-        button:disabled {
-            background-color: #bbb;
-            cursor: not-allowed;
-        }
-        .container {
-            margin: 0 auto;
-            width: 70%;
-            font-size: 1.5rem;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        .mini-games, .leaderboard, .settings {
-            margin-top: 30px;
-        }
-        .section-title {
-            font-weight: bold;
-            font-size: 2rem;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-        }
-        select {
-            width: 100%;
-            padding: 10px;
-            font-size: 1.2rem;
-            border-radius: 5px;
-            border: none;
-            margin-top: 10px;
-        }
-        .word-pair {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .word {
-            width: 45%;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        .meaning {
-            width: 45%;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        #timer {
-            font-size: 2rem;
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <title>Vocabulous - Language Learning</title>
+    <link rel="stylesheet" href="homepage.css">
 </head>
 <body>
 
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="navbar-brand">Vocabulous</a>
+            <ul class="navbar-links">
+                <li><a href="#home-page" onclick="goHome()">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#leaderboard" class="leaderboard-link" onclick="showDropdown('leaderboard')">Leaderboard</a></li>
+                <li><a href="#coins" class="coins-link" onclick="showDropdown('coins')">Coins</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Leaderboard Section -->
+
     <!-- Home Page Content -->
     <div id="home-page">
-        <h1>Language Learning</h1>
+        <br><br><br><br><br><br><h1>Language Learning</h1>
 
         <div class="container">
             <div class="section-title">Select Language to Learn:</div>
@@ -102,14 +37,23 @@
             </select>
         </div>
 
-        <div class="container mini-games">
+<div class="container mini-games">
             <div class="section-title">Choose a Mini Game:</div>
-            <button id="showSpeedGame">Speed</button>
-            <button id="showPronunciationGame">Pronunciation</button>
-            <button id="showFlashcardsGame">Flashcards</button>
-            <button id="scenariosGame">Scenarios</button>
+        <div class="container">
+            <button>Speed</button>
         </div>
-    </div>
+        <div class="container">
+            <button>Pronunciation</button>
+        </div>
+        
+        <div class="container">
+            <button>Flashcards</button>
+        </div>
+
+        <div class="container">
+            <button>Scenarios</button>
+        </div>
+ </div>
 
     <!-- Speed Game Content -->
     <div id="speed-game-page" style="display: none;">
@@ -150,6 +94,33 @@
         <div id="timer">Time Remaining: 2:00</div>
         <button onclick="goHome()">Go back home</button>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Vocabulous</h3>
+                <p>Vocabulous is a language learning platform designed to make learning fun and interactive through games and scenarios.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home-page">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@vocabulous.com</p>
+                <p>Phone: +1 (123) 456-7890</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Vocabulous. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
         const speedGamePage = document.getElementById("speed-game-page");

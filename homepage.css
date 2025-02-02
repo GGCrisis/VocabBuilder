@@ -10,6 +10,21 @@
     padding:0;
     box-sizing: border-box;
  }
+ @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+ .container {
+    text-align: center;
+    background-color: #9ec1cf;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.title {
+    font-family: 'Pacifico', cursive;
+    font-size: 50px;
+    color: #f8e5c8;
+    text-shadow: 5px 5px 0px black;
+    margin-bottom: 5px;
+}
 
 body {
     padding: 30px;
@@ -287,6 +302,53 @@ select {
     background-color: var(--base-color);
     transform: scale(1.05);
 }
+#aly-games {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background:var(--text-color);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.game {
+    background: white;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+    font-size: 1.5rem;
+}
+
+button {
+    background: var(--base-color);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+input {
+    padding: 8px;
+    border: 2px solid #f06595;
+    border-radius: 5px;
+    text-align: center;
+}
+
 
 
 

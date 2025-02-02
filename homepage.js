@@ -212,3 +212,4 @@ document.querySelector('.leaderboard-link').addEventListener('click', () => {
 document.querySelector('.coins-link').addEventListener('click', () => {
     showDropdown('coins');
 });
+

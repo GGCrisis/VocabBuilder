@@ -3,28 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulous - Language Learning</title>
+    <title>Language Learning</title>
     <link rel="stylesheet" href="homepage.css">
 </head>
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="#" class="navbar-brand">Vocabulous</a>
-            <ul class="navbar-links">
-                <li><a href="#home-page" onclick="goHome()">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#leaderboard" class="leaderboard-link" onclick="showDropdown('leaderboard')">Leaderboard</a></li>
-                <li><a href="#coins" class="coins-link" onclick="showDropdown('coins')">Coins</a></li>
-            </ul>
-        </div>
-    </nav>
-    <!-- Leaderboard Section -->
-
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="#" class="navbar-brand">Vocabulous</a>
+        <ul class="navbar-links">
+            <li><a href="#home-page" onclick="goHome()">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#leaderboard" class="leaderboard-link" onclick="showDropdown('leaderboard')">Leaderboard</a></li>
+            <li><a href="#coins" class="coins-link" onclick="showDropdown('coins')">Coins</a></li>
+        </ul>
+    </div>
+</nav>
     <!-- Home Page Content -->
     <div id="home-page">
-        <br><br><br><br><br><br><h1>Language Learning</h1>
+        <h1>Language Learning</h1>
 
         <div class="container">
             <div class="section-title">Select Language to Learn:</div>
@@ -37,23 +34,14 @@
             </select>
         </div>
 
-<div class="container mini-games">
+        <div class="container mini-games">
             <div class="section-title">Choose a Mini Game:</div>
-        <div class="container">
-            <button>Speed</button>
+            <button id="showSpeedGame">Speed</button>
+            <button id="showPronunciationGame">Pronunciation</button>
+            <button id="showFlashcardsGame">Flashcards</button>
+            <button id="scenariosGame">Scenarios</button>
         </div>
-        <div class="container">
-            <button>Pronunciation</button>
-        </div>
-        
-        <div class="container">
-            <button>Flashcards</button>
-        </div>
-
-        <div class="container">
-            <button>Scenarios</button>
-        </div>
- </div>
+    </div>
 
     <!-- Speed Game Content -->
     <div id="speed-game-page" style="display: none;">
@@ -94,9 +82,8 @@
         <button onclick="goHome()">Go back home</button>
         <button id="nextWordButton">Next Word</button> <!-- Add this button -->
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
+       <!-- Footer -->
+       <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
                 <h3>About Vocabulous</h3>
@@ -113,12 +100,12 @@
             </div>
             <div class="footer-section">
                 <h3>Contact Us</h3>
-                <p>Email: support@vocabulous.com</p>
-                <p>Phone: +1 (123) 456-7890</p>
+                <p>Email: ecs.crce.10112@gmail.com , ecs.crce.10113@gmail.com</p>
+                <p>BY-Arum Kumar, Alycia &  Chris Coutinho</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2023 Vocabulous. All rights reserved.</p>
+            <p>&copy; 2025 Vocabulous. All rights reserved.</p>
         </div>
     </footer>
 

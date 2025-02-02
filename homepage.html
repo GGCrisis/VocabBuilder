@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Learning</title>
     <link rel="stylesheet" href="homepage.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 </head>
 <body>
 <!-- Navbar -->
 <nav class="navbar">
     <div class="navbar-container">
-        <a href="#" class="navbar-brand">Vocabulous</a>
+        <div class="title">Vocabulous</div>
         <ul class="navbar-links">
             <li><a href="#home-page" onclick="goHome()">Home</a></li>
             <li><a href="#about">About</a></li>
+            <li><a href="#coins">           <i class='bx bxs-coin-stack bx-sm' style='color:#ffb702'  ></i>
+                Coins: <span id="coin-count">0</span></li></a>
             <li><a href="#leaderboard" class="leaderboard-link" onclick="showDropdown('leaderboard')">Leaderboard</a></li>
-            <li><a href="#coins" class="coins-link" onclick="showDropdown('coins')">Coins</a></li>
-        </ul>
     </div>
 </nav>
     <!-- Home Page Content -->
@@ -40,7 +43,34 @@
             <button id="showPronunciationGame">Pronunciation</button>
             <button id="showFlashcardsGame">Flashcards</button>
             <button id="scenariosGame">Scenarios</button>
+            <button onclick="showSection('word-of-the-day')">Word of the Day</button>
+            <button onclick="showSection('multiple-choice')">Multiple Choice</button>
+            <button onclick="showSection('word-scramble')">Word Scramble</button>
         </div>
+    </div>
+    <div id="aly-games">
+    <div id="word-of-the-day" class="game">
+        <h2>Word of the Day</h2>
+        <p id="word"></p>
+        <p id="definition"></p>
+    </div>
+
+    <div id="multiple-choice" class="game">
+        <h2>Multiple Choice Quiz</h2>
+        <p id="mc-word"></p>
+        <div id="mc-options"></div>
+        <p id="mc-result"></p>
+        <button onclick="nextMultipleChoice()">Next Question</button>
+    </div>
+
+    <div id="word-scramble" class="game">
+        <h2>Word Scramble</h2>
+        <p id="scrambled-word"></p>
+        <input type="text" id="user-guess" placeholder="Enter your guess">
+        <button onclick="checkScrambledWord()">Check</button>
+        <p id="scramble-result"></p>
+        <button onclick="nextScrambledWord()">Next Word</button>
+    </div>
     </div>
 
     <!-- Speed Game Content -->
@@ -211,6 +241,132 @@
             console.log("Next Word button clicked"); // Debug log
             loadNextWord(); // Load the next word
         });
+
+
+        const words = [
+            { word: "Ubiquitous", definition: "Present, appearing, or found everywhere" },
+            { word: "Ephemeral", definition: "Lasting for a very short time" },
+            { word: "Pragmatic", definition: "Dealing with things sensibly and realistically" },
+            { word: "Eloquent", definition: "Fluent or persuasive in speaking or writing" },
+            { word: "Resilient", definition: "Able to withstand or recover quickly from difficult conditions" },
+            { word: "Serendipity", definition: "The occurrence and development of events by chance in a happy or beneficial way" },
+            { word: "Mellifluous", definition: "Sweet or musical; pleasant to hear" },
+            { word: "Enigmatic", definition: "Difficult to interpret or understand; mysterious" },
+            { word: "Quintessential", definition: "Representing the most perfect or typical example of a quality or class" },
+            { word: "Perseverance", definition: "Persistence in doing something despite difficulty or delay in achieving success" }
+        ];
+
+        let currentWord;
+        let currentScrambledWord;
+        let coins = 0;
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.game').forEach(el => el.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+            if (sectionId === 'word-of-the-day') {
+                showWordOfTheDay();
+            } else if (sectionId === 'multiple-choice') {
+                nextMultipleChoice();
+            } else if (sectionId === 'word-scramble') {
+                nextScrambledWord();
+            } else if (sectionId === 'leaderboard') {
+                updateLeaderboard();
+            }
+        }
+
+        function showWordOfTheDay() {
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById('word').textContent = randomWord.word;
+            document.getElementById('definition').textContent = randomWord.definition;
+        }
+
+        function nextMultipleChoice() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById('mc-word').textContent = currentWord.definition;
+            
+            const options = [currentWord.word];
+            while (options.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)].word;
+                if (!options.includes(randomWord)) {
+                    options.push(randomWord);
+                }
+            }
+            
+            options.sort(() => Math.random() - 0.5);
+            
+            const optionsHtml = options.map(option => 
+                `<button onclick="checkMultipleChoice('${option}')">${option}</button>`
+            ).join('');
+            
+            document.getElementById('mc-options').innerHTML = optionsHtml;
+            document.getElementById('mc-result').textContent = '';
+        }
+
+        function checkMultipleChoice(selectedWord) {
+            const resultElement = document.getElementById('mc-result');
+            if (selectedWord === currentWord.word) {
+                resultElement.textContent = "Correct! You earned 10 coins.";
+                resultElement.style.color = "green";
+                updateCoins(10);
+            } else {
+                resultElement.textContent = `Incorrect. The correct answer is ${currentWord.word}.`;
+                resultElement.style.color = "red";
+            }
+        }
+
+        function scrambleWord(word) {
+            return word.split('').sort(() => Math.random() - 0.5).join('');
+        }
+
+        function nextScrambledWord() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            currentScrambledWord = scrambleWord(currentWord.word.toLowerCase());
+            document.getElementById('scrambled-word').textContent = currentScrambledWord;
+            document.getElementById('user-guess').value = '';
+            document.getElementById('scramble-result').textContent = '';
+        }
+
+        function checkScrambledWord() {
+            const userGuess = document.getElementById('user-guess').value.toLowerCase();
+            const resultElement = document.getElementById('scramble-result');
+            if (userGuess === currentWord.word.toLowerCase()) {
+                resultElement.textContent = "Correct! You earned 15 coins.";
+                resultElement.style.color = "green";
+                updateCoins(15);
+            } else {
+                resultElement.textContent = `Incorrect. The correct word is ${currentWord.word}.`;
+                resultElement.style.color = "red";
+            }
+        }
+
+        function updateCoins(amount) {
+            coins += amount;
+            document.getElementById('coin-count').textContent = coins;
+        }
+
+        function updateLeaderboard() {
+            const leaderboardData = [
+                { username: "WordMaster", coins: 1000 },
+                { username: "VocabKing", coins: 850 },
+                { username: "LanguageLover", coins: 720 },
+                { username: "Guest", coins: coins }
+            ];
+
+            leaderboardData.sort((a, b) => b.coins - a.coins);
+
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = '';
+
+            leaderboardData.forEach((player, index) => {
+                const row = leaderboardBody.insertRow();
+                row.insertCell(0).textContent = index + 1;
+                row.insertCell(1).textContent = player.username;
+                row.insertCell(2).textContent = player.coins;
+            });
+        }
+
+        // Initialize with Word of the Day
+        showSection('word-of-the-day');
     </script>
 </body>
 </html>

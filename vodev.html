@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Builder Pro</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --navbar-color: #2c3e50;
+            --footer-color: #34495e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--navbar-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .coins {
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        #nav-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .game {
+            display: none;
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #word, #mc-word, #scrambled-word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        #definition {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        #mc-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #mc-options button {
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #mc-result, #scramble-result {
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 24px;
+        }
+
+        #leaderboard {
+            margin-top: 30px;
+        }
+
+        #leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #leaderboard th, #leaderboard td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #leaderboard th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        footer {
+            background-color: var(--footer-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .game {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Vocabulary Builder Pro</h1>
+        <div class="user-info">
+            <span class="coins">Coins: <span id="coin-count">0</span></span>
+            <span id="username">Guest</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="nav-buttons">
+            <button onclick="showSection('word-of-the-day')">Word of the Day</button>
+            <button onclick="showSection('multiple-choice')">Multiple Choice</button>
+            <button onclick="showSection('word-scramble')">Word Scramble</button>
+            <button onclick="showSection('leaderboard')">Leaderboard</button>
+        </div>
+
+        <div id="word-of-the-day" class="game">
+            <h2>Word of the Day</h2>
+            <p id="word"></p>
+            <p id="definition"></p>
+        </div>
+
+        <div id="multiple-choice" class="game">
+            <h2>Multiple Choice Quiz</h2>
+            <p id="mc-word"></p>
+            <div id="mc-options"></div>
+            <p id="mc-result"></p>
+            <button onclick="nextMultipleChoice()">Next Question</button>
+        </div>
+
+        <div id="word-scramble" class="game">
+            <h2>Word Scramble</h2>
+            <p id="scrambled-word"></p>
+            <input type="text" id="user-guess" placeholder="Enter your guess">
+            <button onclick="checkScrambledWord()">Check</button>
+            <p id="scramble-result"></p>
+            <button onclick="nextScrambledWord()">Next Word</button>
+        </div>
+
+        <div id="leaderboard" class="game">
+            <h2>Leaderboard</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Coins</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Leaderboard data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Vocabulary Builder Pro. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const words = [
+            { word: "Ubiquitous", definition: "Present, appearing, or found everywhere" },
+            { word: "Ephemeral", definition: "Lasting for a very short time" },
+            { word: "Pragmatic", definition: "Dealing with things sensibly and realistically" },
+            { word: "Eloquent", definition: "Fluent or persuasive in speaking or writing" },
+            { word: "Resilient", definition: "Able to withstand or recover quickly from difficult conditions" },
+            { word: "Serendipity", definition: "The occurrence and development of events by chance in a happy or beneficial way" },
+            { word: "Mellifluous", definition: "Sweet or musical; pleasant to hear" },
+            { word: "Enigmatic", definition: "Difficult to interpret or understand; mysterious" },
+            { word: "Quintessential", definition: "Representing the most perfect or typical example of a quality or class" },
+            { word: "Perseverance", definition: "Persistence in doing something despite difficulty or delay in achieving success" }
+        ];
+
+        let currentWord;
+        let currentScrambledWord;
+        let coins = 0;
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.game').forEach(el => el.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+            if (sectionId === 'word-of-the-day') {
+                showWordOfTheDay();
+            } else if (sectionId === 'multiple-choice') {
+                nextMultipleChoice();
+            } else if (sectionId === 'word-scramble') {
+                nextScrambledWord();
+            } else if (sectionId === 'leaderboard') {
+                updateLeaderboard();
+            }
+        }
+
+        function showWordOfTheDay() {
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById('word').textContent = randomWord.word;
+            document.getElementById('definition').textContent = randomWord.definition;
+        }
+
+        function nextMultipleChoice() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById('mc-word').textContent = currentWord.definition;
+            
+            const options = [currentWord.word];
+            while (options.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)].word;
+                if (!options.includes(randomWord)) {
+                    options.push(randomWord);
+                }
+            }
+            
+            options.sort(() => Math.random() - 0.5);
+            
+            const optionsHtml = options.map(option => 
+                `<button onclick="checkMultipleChoice('${option}')">${option}</button>`
+            ).join('');
+            
+            document.getElementById('mc-options').innerHTML = optionsHtml;
+            document.getElementById('mc-result').textContent = '';
+        }
+
+        function checkMultipleChoice(selectedWord) {
+            const resultElement = document.getElementById('mc-result');
+            if (selectedWord === currentWord.word) {
+                resultElement.textContent = "Correct! You earned 10 coins.";
+                resultElement.style.color = "green";
+                updateCoins(10);
+            } else {
+                resultElement.textContent = `Incorrect. The correct answer is ${currentWord.word}.`;
+                resultElement.style.color = "red";
+            }
+        }
+
+        function scrambleWord(word) {
+            return word.split('').sort(() => Math.random() - 0.5).join('');
+        }
+
+        function nextScrambledWord() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            currentScrambledWord = scrambleWord(currentWord.word.toLowerCase());
+            document.getElementById('scrambled-word').textContent = currentScrambledWord;
+            document.getElementById('user-guess').value = '';
+            document.getElementById('scramble-result').textContent = '';
+        }
+
+        function checkScrambledWord() {
+            const userGuess = document.getElementById('user-guess').value.toLowerCase();
+            const resultElement = document.getElementById('scramble-result');
+            if (userGuess === currentWord.word.toLowerCase()) {
+                resultElement.textContent = "Correct! You earned 15 coins.";
+                resultElement.style.color = "green";
+                updateCoins(15);
+            } else {
+                resultElement.textContent = `Incorrect. The correct word is ${currentWord.word}.`;
+                resultElement.style.color = "red";
+            }
+        }
+
+        function updateCoins(amount) {
+            coins += amount;
+            document.getElementById('coin-count').textContent = coins;
+        }
+
+        function updateLeaderboard() {
+            const leaderboardData = [
+                { username: "WordMaster", coins: 1000 },
+                { username: "VocabKing", coins: 850 },
+                { username: "LanguageLover", coins: 720 },
+                { username: "Guest", coins: coins }
+            ];
+
+            leaderboardData.sort((a, b) => b.coins - a.coins);
+
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = '';
+
+            leaderboardData.forEach((player, index) => {
+                const row = leaderboardBody.insertRow();
+                row.insertCell(0).textContent = index + 1;
+                row.insertCell(1).textContent = player.username;
+                row.insertCell(2).textContent = player.coins;
+            });
+        }
+
+        // Initialize with Word of the Day
+        showSection('word-of-the-day');
+    </script>
+</body>
+</html>
